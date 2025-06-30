@@ -1,0 +1,29 @@
+name: Free RDP
+on:
+ push:
+ branches:
+ - main
+jobs:
+ build:
+ runs-on: windows-latest
+ steps:
+ - name: Checkout Repository
+ uses: actions/checkout@v3
+ - name: Setup ngrok
+ run: |
+ Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
+ Expand-Archive ngrok.zip
+ cd ngrok
+ ./ngrok.exe --version
+ ./ngrok.exe config add-authtoken 2zBDGbJM5ncndKxaWGWfWmXYD4Q_5NRa1faJSpAWxi5hVmCAd
+ Start-Process -FilePath "./ngrok.exe" -ArgumentList "tcp 3389" -NoNewWindow
+ - name: Set RDP Password
+ run: |
+ net user Administrator MySecurePassword123
+ - name: Enable RDP
+ run: |
+ Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+ Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+ - name: Keep Workflow Alive
+ run: |
+ ping 127.0.0.1 -n 3600 > nul
